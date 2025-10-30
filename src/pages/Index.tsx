@@ -106,6 +106,11 @@ export default function Index() {
     setEmployeeCount((prev) => prev + 1);
   };
 
+  const deleteEmployee = (id: string) => {
+    setEmployees((prev) => prev.filter((emp) => emp.id !== id));
+    setEmployeeCount((prev) => prev - 1);
+  };
+
   const addMetric = () => {
     const newMetric: AdditionalMetric = {
       id: Date.now().toString(),
@@ -115,6 +120,11 @@ export default function Index() {
       percentage: 0,
     };
     setAdditionalMetrics([...additionalMetrics, newMetric]);
+    recalculateEmployees();
+  };
+
+  const deleteMetric = (id: string) => {
+    setAdditionalMetrics((prev) => prev.filter((metric) => metric.id !== id));
     recalculateEmployees();
   };
 
@@ -212,6 +222,7 @@ export default function Index() {
               additionalBonus={additionalBonus}
               onUpdateEmployee={updateEmployee}
               onAddEmployee={addEmployee}
+              onDeleteEmployee={deleteEmployee}
               onEmployeeCountChange={handleEmployeeCountChange}
             />
           </TabsContent>
@@ -222,6 +233,7 @@ export default function Index() {
               additionalBonus={additionalBonus}
               onUpdateMetric={updateMetric}
               onAddMetric={addMetric}
+              onDeleteMetric={deleteMetric}
             />
           </TabsContent>
 

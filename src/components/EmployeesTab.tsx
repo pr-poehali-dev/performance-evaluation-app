@@ -18,6 +18,7 @@ interface EmployeesTabProps {
   additionalBonus: number;
   onUpdateEmployee: (id: string, field: 'plan' | 'fact', value: number) => void;
   onAddEmployee: () => void;
+  onDeleteEmployee: (id: string) => void;
   onEmployeeCountChange: (count: number) => void;
 }
 
@@ -27,6 +28,7 @@ export default function EmployeesTab({
   additionalBonus,
   onUpdateEmployee,
   onAddEmployee,
+  onDeleteEmployee,
   onEmployeeCountChange,
 }: EmployeesTabProps) {
   return (
@@ -48,6 +50,7 @@ export default function EmployeesTab({
                 <TableHead>Факт</TableHead>
                 <TableHead>Процент</TableHead>
                 <TableHead>Оценка</TableHead>
+                <TableHead className="w-16"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -75,6 +78,16 @@ export default function EmployeesTab({
                     <div className={`w-10 h-10 rounded-full ${getGradeColor(emp.grade)} flex items-center justify-center text-white font-bold`}>
                       {emp.grade}
                     </div>
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onDeleteEmployee(emp.id)}
+                      className="h-8 w-8 p-0 hover:bg-destructive hover:text-destructive-foreground"
+                    >
+                      <Icon name="Trash2" size={16} />
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}

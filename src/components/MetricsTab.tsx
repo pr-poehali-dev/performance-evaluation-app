@@ -17,6 +17,7 @@ interface MetricsTabProps {
   additionalBonus: number;
   onUpdateMetric: (id: string, field: 'plan' | 'fact', value: number) => void;
   onAddMetric: () => void;
+  onDeleteMetric: (id: string) => void;
 }
 
 export default function MetricsTab({
@@ -24,6 +25,7 @@ export default function MetricsTab({
   additionalBonus,
   onUpdateMetric,
   onAddMetric,
+  onDeleteMetric,
 }: MetricsTabProps) {
   return (
     <div className="space-y-4">
@@ -43,6 +45,7 @@ export default function MetricsTab({
                 <TableHead>План</TableHead>
                 <TableHead>Факт</TableHead>
                 <TableHead>Процент</TableHead>
+                <TableHead className="w-16"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -70,6 +73,16 @@ export default function MetricsTab({
                     />
                   </TableCell>
                   <TableCell className="font-mono">{metric.percentage.toFixed(1)}%</TableCell>
+                  <TableCell>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onDeleteMetric(metric.id)}
+                      className="h-8 w-8 p-0 hover:bg-destructive hover:text-destructive-foreground"
+                    >
+                      <Icon name="Trash2" size={16} />
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
