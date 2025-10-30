@@ -171,6 +171,50 @@ export default function Index() {
   const totalFact = employees.reduce((sum, emp) => sum + emp.fact, 0);
   const overallPercentage = calculatePercentage(totalFact, totalPlan);
 
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+
+  const generatePdf = async () => {
+    setIsGeneratingPdf(true);
+    try {
+      const response = await fetch('https://functions.poehali.dev/6d689a55-e2ea-4ddd-b4f0-af97f10fe8b2', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          employees: employees,
+          metrics: additionalMetrics,
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (data.success && data.pdf) {
+        const byteCharacters = atob(data.pdf);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: 'application/pdf' });
+        
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = data.filename || 'kpi-report.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      }
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('Ошибка при генерации PDF. Попробуйте снова.');
+    } finally {
+      setIsGeneratingPdf(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-7xl mx-auto space-y-6 animate-fade-in">
@@ -437,17 +481,22 @@ export default function Index() {
             <Card className="p-6 bg-card border-border">
               <h2 className="text-xl font-semibold mb-4">Экспорт отчетов</h2>
               <div className="space-y-4">
-                <Button className="w-full" size="lg">
+                <Button 
+                  className="w-full" 
+                  size="lg"
+                  onClick={generatePdf}
+                  disabled={isGeneratingPdf}
+                >
                   <Icon name="FileDown" size={20} className="mr-2" />
-                  Скачать отчет в PDF
+                  {isGeneratingPdf ? 'Генерация PDF...' : 'Скачать отчет в PDF'}
                 </Button>
-                <Button className="w-full" variant="outline" size="lg">
+                <Button className="w-full" variant="outline" size="lg" disabled>
                   <Icon name="FileSpreadsheet" size={20} className="mr-2" />
-                  Экспорт в Excel
+                  Экспорт в Excel (скоро)
                 </Button>
-                <Button className="w-full" variant="outline" size="lg">
+                <Button className="w-full" variant="outline" size="lg" disabled>
                   <Icon name="Printer" size={20} className="mr-2" />
-                  Печать отчета
+                  Печать отчета (скоро)
                 </Button>
               </div>
             </Card>

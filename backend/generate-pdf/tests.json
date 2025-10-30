@@ -1,0 +1,45 @@
+{
+  "tests": [
+    {
+      "name": "Generate PDF report with employee data",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "employees": [
+          {
+            "id": "1",
+            "name": "Иванов А.",
+            "plan": 80000,
+            "fact": 30000,
+            "percentage": 37.5,
+            "grade": 2
+          },
+          {
+            "id": "2",
+            "name": "Петров Б.",
+            "plan": 100000,
+            "fact": 85000,
+            "percentage": 85,
+            "grade": 5
+          }
+        ],
+        "metrics": [
+          {
+            "id": "1",
+            "name": "Качество работы",
+            "plan": 100,
+            "fact": 78,
+            "percentage": 78
+          }
+        ]
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true,
+        "pdf": "string",
+        "filename": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
